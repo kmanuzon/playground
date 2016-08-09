@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JS Date Diff</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <h1>Date Diff</h1>
+    <form id="diff-table">
+        <table class="table table-condensed">
+            <thead>
+                <tr>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Category</th>
+                    <th>Name</th>
+                <tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><label><input type="radio" name="diff_from" value="1470778092"> 1470778092 08/09/2016 @ 9:28pm (UTC)</label></td>
+                    <td><label><input type="radio" name="diff_to" value="1470778092"> 1470778092 08/09/2016 @ 9:28pm (UTC)</label></td>
+                    <td>Animals</td>
+                    <td>Blue Dog</td>
+                <tr>
+                <tr>
+                    <td><label><input type="radio" name="diff_from" value="1470733200"> 1470733200 08/09/2016 @ 9:00am (UTC)</label></td>
+                    <td><label><input type="radio" name="diff_to" value="1470733200"> 1470733200 08/09/2016 @ 9:00am (UTC)</label></td>
+                    <td>Animals</td>
+                    <td>White Dog</td>
+                <tr>
+                <tr>
+                    <td><label><input type="radio" name="diff_from" value="1465192800"> 1465192800 06/06/2016 @ 6:00am (UTC)</label></td>
+                    <td><label><input type="radio" name="diff_to" value="1465192800"> 1465192800 06/06/2016 @ 6:00am (UTC)</label></td>
+                    <td>Animals</td>
+                    <td>Black Cat</td>
+                <tr>
+                <tr>
+                    <td><label><input type="radio" name="diff_from" value="1459742400"> 1459742400 04/04/2016 @ 4:00am (UTC)</label></td>
+                    <td><label><input type="radio" name="diff_to" value="1459742400"> 1459742400 04/04/2016 @ 4:00am (UTC)</label></td>
+                    <td>Animals</td>
+                    <td>Brown Horse</td>
+                <tr>
+                <tr>
+                    <td><label><input type="radio" name="diff_from" value="1456974000"> 1456974000 03/03/2016 @ 3:00am (UTC)</label></td>
+                    <td><label><input type="radio" name="diff_to" value="1456974000"> 1456974000 03/03/2016 @ 3:00am (UTC)</label></td>
+                    <td>Furniture</td>
+                    <td>Glass Table</td>
+                <tr>
+            </tbody>
+        </table>
+        <input type="submit" value="Calculate" class="btn btn-primary">
+    </form>
+    <br>
+    <blockquote>
+        Time from: <span id="diff-from"></span><br>
+        Time to: <span id="diff-to"></span><br>
+        Result: <span id="diff-result"></span>
+    </blockquote>
+</div>
+<script>
+$(document).ready(function() {
+    $('#diff-table').on('submit', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        var timeFromCbCollection = e.target.diff_from;
+        var timeToCbCollection = e.target.diff_to;
+        var timeFrom = timeFromCbCollection.value;
+        var timeTo = timeToCbCollection.value;
+        var timeFromDescription = '';
+        var timeToDescription = '';
+
+        for (var i in timeFromCbCollection) {
+            if (timeFromCbCollection[i].checked) {
+                timeFromDescription = $(timeFromCbCollection[i]).closest('tr').children(':nth-child(4)').text();
+            }
+        }
+
+        for (var i in timeToCbCollection) {
+            if (timeToCbCollection[i].checked) {
+                timeToDescription = $(timeToCbCollection[i]).closest('tr').children(':nth-child(4)').text();
+            }
+        }
+
+        $('#diff-from').html(timeFrom + ' :: ' + timeFromDescription);
+        $('#diff-to').html(timeTo + ' :: ' + timeToDescription);
+        $('#diff-result').html(getDateDiffFormatted(timeFrom, timeTo));
+    });
+});
+
+/**
+ * Calculate the time difference between two timestamps.
+ *
+ * @param int
+ * @param int
+ * @return string
+ */
+function getDateDiffFormatted(timeFrom, timeTo) {
+
+    var secondsPerMinute = 60;
+    var secondsPerHour = 60 * secondsPerMinute;
+    var secondsPerDay = 24 * secondsPerHour;
+    var days = 0;
+    var hours = 0;
+    var minutes = 0;
+    var seconds = 0;
+    var diff = 0;
+    var result = '';
+
+    diff = timeFrom - timeTo;
+
+    // remove sign from difference.
+    if (diff < 0) {
+        diff = Math.abs(diff);
+        result += '-';
+    } else {
+        result += '+';
+    }
+
+    // allocate days.
+    if (diff >= secondsPerDay) {
+        days = Math.floor(diff / secondsPerDay);
+        diff = diff - (days * secondsPerDay);
+    }
+    //result += days + ' day' + (days > 1 ? 's' : '');
+    result += days + ' days';
+
+    // allocate hours.
+    if (diff >= secondsPerHour) {
+        hours = Math.floor(diff / secondsPerHour);
+        diff = diff - (hours * secondsPerHour);
+    }
+    //result += ' ' + hours + ' hour' + (hours > 1 ? 's' : '');
+    result += ' ' + hours + ' hours';
+
+    // allocate minutes.
+    if (diff >= secondsPerMinute) {
+        minutes = Math.floor(diff / secondsPerMinute);
+        diff = diff - (minutes * secondsPerMinute);
+    }
+    //result += ' ' + minutes + ' minute' + (minutes > 1 ? 's' : '');
+    result += ' ' + minutes + ' minutes';
+
+    // allocate seconds.
+    seconds = diff;
+    //result += ' ' + seconds + ' second' + (seconds > 1 ? 's' : '');
+    result += ' ' + seconds + ' seconds';
+
+    return result;
+}
+</script>
+</body>
+</html>
