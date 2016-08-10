@@ -1,10 +1,6 @@
-test
-====
+# Playground
+Snippets, tests and experiments.
 
-testing only
-
-commit before branching
-
-this change is in master and will conflict with branch tb.
-
-changed in tb branch.
+| File | Description |
+| --- | --- |
+| js-date-diff.html | Date Diff using Javascript. |
